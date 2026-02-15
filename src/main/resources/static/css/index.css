@@ -1,0 +1,172 @@
+/* ================= ANIMATED BACKGROUND ================= */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #4f46e5, #7c3aed, #2563eb, #9333ea);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    transition: background 0.4s ease;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+    background: rgba(255,255,255,0.9) !important;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* ================= HERO ================= */
+.hero-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 100px 0;
+    color: white;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin: 25px 0;
+}
+
+.hero-img {
+    max-width: 100%;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* ================= BUTTONS ================= */
+.btn-custom {
+    padding: 14px 40px;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: 0.3s;
+    margin-right: 15px;
+}
+
+.btn-customer {
+    background: #22c55e;
+    color: white;
+}
+
+.btn-provider {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* ================= FEATURES ================= */
+.features {
+    background: #ffffff;
+    padding: 80px 20px;
+    transition: background 0.4s ease;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+
+/* ================= DARK MODE ================= */
+body.dark-mode {
+    background: #111827;
+}
+
+body.dark-mode .navbar {
+    background: #1f2937 !important;
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .nav-link {
+    color: #f3f4f6 !important;
+}
+
+body.dark-mode .features {
+    background: #1f2937;
+}
+
+body.dark-mode .feature-card {
+    background: #374151;
+    color: white;
+}
+
+body.dark-mode h1,
+body.dark-mode p {
+    color: #f3f4f6;
+}
+/* ================= NAV LINKS ================= */
+
+.nav-home {
+    font-weight: 500;
+    color: #444 !important;
+    transition: 0.3s;
+}
+
+.nav-home:hover {
+    color: #4f46e5 !important;
+}
+
+/* ================= CUSTOMER LOGIN BUTTON ================= */
+
+.btn-customer-login {
+    background: #4f46e5;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-customer-login:hover {
+    background: #4338ca;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79,70,229,0.3);
+}
+
+/* ================= PROVIDER LOGIN BUTTON ================= */
+
+.btn-provider-login {
+    background: #f59e0b;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-provider-login:hover {
+    background: #d97706;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245,158,11,0.3);
+}

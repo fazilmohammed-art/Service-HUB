@@ -1,0 +1,156 @@
+/* ================= GOOGLE FONT ================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+/* ================= BODY ================= */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    min-height: 100vh;
+}
+
+/* ================= NAVBAR ================= */
+.custom-navbar {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: #4f46e5 !important;
+}
+
+.nav-home {
+    font-weight: 500;
+    color: #444 !important;
+}
+
+.nav-home:hover {
+    color: #4f46e5 !important;
+}
+
+/* ================= NAV BUTTONS ================= */
+.btn-customer-login,
+.btn-provider-login {
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
+    transition: 0.3s ease;
+}
+
+.btn-customer-login {
+    background: #4f46e5;
+    color: white;
+}
+
+.btn-customer-login:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+}
+
+.btn-provider-login {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-provider-login:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+}
+
+.active-login {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* ================= WRAPPER ================= */
+.auth-wrapper {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* ================= CARD ================= */
+.auth-card {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-radius: 18px;
+    padding: 45px 40px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+.auth-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+}
+
+/* ================= TITLE ================= */
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #4f46e5;
+}
+
+/* ================= INPUT ================= */
+.form-control {
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+
+/* ================= BUTTON ================= */
+.btn-register {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border: none;
+    color: white;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.btn-register:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+}
+
+/* ================= LINK ================= */
+.auth-card a {
+    color: #4f46e5;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.auth-card a:hover {
+    text-decoration: underline;
+}
+
+/* ================= ALERT ================= */
+.alert {
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 30px 25px;
+    }
+}

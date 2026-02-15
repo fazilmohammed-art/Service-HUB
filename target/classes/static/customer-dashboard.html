@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Dashboard - ServiceHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/csdashboard.css">
+
+</head>
+
+<body style="background:#f5f5f5">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-dark" style="background:linear-gradient(135deg,#667eea,#764ba2)">
+    <div class="container-fluid">
+        <span class="navbar-brand">🔧 ServiceHub</span>
+        <div>
+            <span class="text-white me-3" id="userName"></span>
+            <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid p-4">
+<div class="row">
+
+<!-- SIDEBAR -->
+<div class="col-md-3">
+    <div class="card p-3">
+        <h5>Menu</h5>
+        <div class="list-group">
+            <button class="list-group-item list-group-item-action active"
+                onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button class="list-group-item list-group-item-action"
+                onclick="showSection('create')">➕ Create Service Request</button>
+            <button class="list-group-item list-group-item-action"
+                onclick="showSection('requests')">📋 My Requests</button>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="col-md-9">
+
+<div id="dashboardSection">
+    <div class="card p-4 mb-3">
+        <h4>Welcome back, <span id="welcomeName"></span> 👋</h4>
+        <p class="text-muted">Manage your service requests and quotations.</p>
+    </div>
+</div>
+
+<!-- CREATE REQUEST -->
+<div id="createSection" style="display:none;">
+    <div class="card p-4">
+        <h5>Create Service Request</h5>
+        <div id="createAlert"></div>
+
+        <form id="requestForm" enctype="multipart/form-data">
+            <select id="category" class="form-select mb-3" required>
+                <option value="">Select Category</option>
+                <option>Plumbing</option>
+                <option>Electrical</option>
+                <option>Cleaning</option>
+                <option>Carpentry</option>
+                <option>AC Repair</option>
+            </select>
+
+            <textarea id="description" class="form-control mb-3"
+                placeholder="Description" required></textarea>
+
+            <input id="address" class="form-control mb-3"
+                placeholder="Address" required>
+
+            <input type="file" id="image" class="form-control mb-3" required>
+
+            <button class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- MY REQUESTS -->
+<div id="requestsSection" style="display:none;">
+    <div class="card p-4">
+        <h5>My Requests</h5>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Image</th>
+                    <th>Quotations</th>
+                </tr>
+            </thead>
+            <tbody id="requestsTable"></tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-white">Image Preview</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="modalImage" src="" class="img-fluid rounded">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTATION MODAL -->
+<div class="modal fade" id="quotationModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Quotations</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Provider</th>
+                    <th>Mobile</th>
+                    <th>Amount</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="quotationTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+userName.innerText = sessionStorage.getItem("userName") || "";
+welcomeName.innerText = sessionStorage.getItem("userName") || "";
+
+// SECTION SWITCHING
+function showSection(section){
+    dashboardSection.style.display="none";
+    createSection.style.display="none";
+    requestsSection.style.display="none";
+
+    if(section==="dashboard") dashboardSection.style.display="block";
+    if(section==="create") createSection.style.display="block";
+    if(section==="requests"){
+        requestsSection.style.display="block";
+        loadRequests();
+    }
+}
+
+// CREATE REQUEST
+requestForm.addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("category", category.value);
+    formData.append("description", description.value);
+    formData.append("address", address.value);
+    formData.append("image", image.files[0]);
+
+    const res = await fetch(
+        "http://localhost:8080/api/service-requests/create",
+        { method:"POST", credentials:"include", body:formData }
+    );
+
+    const data = await res.json();
+
+    createAlert.innerHTML =
+        `<div class="alert ${res.ok?'alert-success':'alert-danger'}">
+            ${data.message}
+        </div>`;
+
+    if(res.ok) showSection("requests");
+});
+
+// LOAD REQUESTS
+async function loadRequests(){
+
+    const res = await fetch(
+        "http://localhost:8080/api/service-requests/customer",
+        { credentials:"include" }
+    );
+
+    const data = await res.json();
+    requestsTable.innerHTML="";
+
+    data.forEach(req=>{
+        requestsTable.innerHTML+=`
+            <tr>
+                <td>${req.id}</td>
+                <td>${req.category}</td>
+                <td>${req.description}</td>
+                <td>${req.status||'Pending'}</td>
+                <td>
+                    ${req.imagePath?
+                        `<img src="http://localhost:8080/uploads/${req.imagePath}"
+                        width="60" style="cursor:pointer"
+                        onclick="openImageModal('http://localhost:8080/uploads/${req.imagePath}')">`
+                        :"No Image"}
+                </td>
+                <td>
+                    <button class="btn btn-info btn-sm"
+                        onclick="viewQuotations(${req.id})">
+                        View
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// IMAGE MODAL
+function openImageModal(url){
+    modalImage.src=url;
+    new bootstrap.Modal(imageModal).show();
+}
+
+// VIEW QUOTATIONS
+async function viewQuotations(requestId){
+
+    const reqRow = Array.from(requestsTable.rows)
+    .find(r => r.cells[0].innerText == requestId);
+
+const reqCurrentStatus = reqRow ? reqRow.cells[3].innerText : "";
+
+
+    const res = await fetch(
+        `http://localhost:8080/api/quotations/request/${requestId}`,
+        { credentials:"include" }
+    );
+
+    const data = await res.json();
+    quotationTable.innerHTML="";
+
+    if(data.length===0){
+        quotationTable.innerHTML=
+            `<tr><td colspan="6" class="text-center">
+                No quotations yet
+             </td></tr>`;
+    }
+
+    data.forEach(q=>{
+
+        quotationTable.innerHTML+=`
+            <tr>
+                <td>${q.providerName}</td>
+                <td>
+                    <a href="tel:${q.providerPhone}">
+                        ${q.providerPhone}
+                    </a>
+                </td>
+                <td>₹ ${q.amount}</td>
+                <td>${q.message}</td>
+                <td>${q.status || 'Pending'}</td>
+                <td>
+                 ${
+    reqCurrentStatus === "Confirmed"
+    ? "-"
+    :
+    (
+        q.status === "Accepted" || q.status === "Rejected"
+        ? "-"
+        :
+        `
+        <button class="btn btn-success btn-sm me-1"
+            onclick="acceptQuotation(${q.id}, ${requestId})">
+            Accept
+        </button>
+        <button class="btn btn-danger btn-sm"
+            onclick="rejectQuotation(${q.id}, ${requestId})">
+            Reject
+        </button>
+        `
+    )
+}
+
+                </td>
+            </tr>
+        `;
+    });
+
+    new bootstrap.Modal(quotationModal).show();
+}
+
+// ACCEPT
+async function acceptQuotation(id, requestId){
+
+    if(!confirm("Accept this quotation?")) return;
+
+    try {
+
+        const res = await fetch(
+            `http://localhost:8080/api/quotations/accept/${id}`,
+            { method:"POST", credentials:"include" }
+        );
+
+        const data = await res.json();
+
+        alert(data.message);
+
+        // 🔥 Close modal first
+        bootstrap.Modal.getInstance(quotationModal).hide();
+
+        // 🔥 Reload requests table instead of viewQuotations
+        loadRequests();
+
+    } catch(error){
+        alert("Something went wrong");
+        console.error(error);
+    }
+}
+
+
+
+
+// REJECT
+async function rejectQuotation(id, requestId){
+
+    if(!confirm("Reject this quotation?")) return;
+
+    try {
+
+        const res = await fetch(
+            `http://localhost:8080/api/quotations/reject/${id}`,
+            { method:"POST", credentials:"include" }
+        );
+
+        const data = await res.json();
+
+        alert(data.message);
+
+        // 🔥 Close modal safely
+        bootstrap.Modal.getInstance(quotationModal).hide();
+
+        // 🔥 Reload request table
+        loadRequests();
+
+    } catch(error){
+        alert("Something went wrong");
+        console.error(error);
+    }
+}
+
+
+
+
+// LOGOUT
+async function logout(){
+    await fetch(
+        "http://localhost:8080/api/auth/logout",
+        {method:"POST",credentials:"include"}
+    );
+    sessionStorage.clear();
+    window.location.href="customer-login.html";
+}
+
+</script>
+
+
+</body>
+</html>
