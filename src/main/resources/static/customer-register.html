@@ -73,10 +73,18 @@
                 <input type="email" id="email" class="form-control" required>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Phone</label>
-                <input type="text" id="phone" class="form-control" required>
-            </div>
+                <div class="mb-3">
+    <label class="form-label">Phone</label>
+    <input 
+        type="tel"
+        id="phone"
+        class="form-control"
+        maxlength="10"
+        pattern="[0-9]{10}"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+        required
+    >
+</div>
 
             <div class="mb-3">
                 <label class="form-label">Address</label>

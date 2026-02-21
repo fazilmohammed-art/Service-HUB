@@ -8,6 +8,7 @@ C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\controller
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\model\Quotation.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\service\ServiceRequestService.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\controller\AuthController.java
+C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\util\OtpUtil.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\dto\QuotationDTO.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\dto\ServiceProviderDTO.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\repository\CustomerRepository.java
@@ -15,6 +16,7 @@ C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\service\Qu
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\repository\ServiceProviderRepository.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\service\ServiceProviderService.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\model\ServiceRequest.java
+C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\service\EmailService.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\config\WebConfig.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\controller\ServiceRequestController.java
 C:\Collage Final Year Project\Servicehub\src\main\java\com\servicehub\ServicehubApplication.java

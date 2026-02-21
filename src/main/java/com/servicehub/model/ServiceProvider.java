@@ -1,5 +1,7 @@
 package com.servicehub.model;
 
+import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,8 @@ public class ServiceProvider {
     private String phone;
     private String password;
     private String category;
+    private String otp;
+private LocalDateTime otpTime;
 
     // Getters & Setters
 
@@ -33,4 +37,19 @@ public class ServiceProvider {
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+    public String getOtp() {
+    return otp;
+}
+
+public void setOtp(String otp) {
+    this.otp = otp;
+}
+
+public LocalDateTime getOtpTime() {
+    return otpTime;
+}
+
+public void setOtpTime(LocalDateTime otpTime) {
+    this.otpTime = otpTime;
+}
 }

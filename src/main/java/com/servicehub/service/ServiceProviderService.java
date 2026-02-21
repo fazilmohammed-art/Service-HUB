@@ -5,23 +5,44 @@ import com.servicehub.repository.ServiceProviderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class ServiceProviderService {
 
     @Autowired
-    private ServiceProviderRepository repository;
+    private ServiceProviderRepository serviceProviderRepository;
 
+    // ================= REGISTER =================
     public ServiceProvider registerProvider(ServiceProvider provider) {
-        return repository.save(provider);
+
+        if (serviceProviderRepository.findByEmail(provider.getEmail()) != null) {
+            return null;
+        }
+
+        return serviceProviderRepository.save(provider);
     }
 
+    // ================= LOGIN =================
     public ServiceProvider loginProvider(String email, String password) {
-        Optional<ServiceProvider> provider = repository.findByEmail(email);
-        if (provider.isPresent() && provider.get().getPassword().equals(password)) {
-            return provider.get();
+
+        ServiceProvider provider =
+                serviceProviderRepository.findByEmail(email);
+
+        if (provider != null &&
+            provider.getPassword().equals(password)) {
+
+            return provider;
         }
+
         return null;
+    }
+
+    // ================= SAVE (FOR OTP UPDATE) =================
+    public ServiceProvider save(ServiceProvider provider) {
+        return serviceProviderRepository.save(provider);
+    }
+
+    // ================= FIND BY EMAIL =================
+    public ServiceProvider findByEmail(String email) {
+        return serviceProviderRepository.findByEmail(email);
     }
 }

@@ -14,6 +14,8 @@ com\servicehub\model\ServiceProvider.class
 com\servicehub\dto\QuotationDTO.class
 com\servicehub\dto\ServiceProviderDTO.class
 com\servicehub\repository\CustomerRepository.class
+com\servicehub\util\OtpUtil.class
+com\servicehub\service\EmailService.class
 com\servicehub\model\Quotation.class
 com\servicehub\ServicehubApplication.class
 com\servicehub\dto\ServiceRequestDTO.class
