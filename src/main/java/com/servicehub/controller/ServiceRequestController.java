@@ -25,39 +25,55 @@ public class ServiceRequestController {
     private FileUploadService fileUploadService;
     
     // CREATE SERVICE REQUEST
-    @PostMapping("/create")
-    public ResponseEntity<?> createRequest(
-            @RequestParam("category") String category,
-            @RequestParam("description") String description,
-            @RequestParam("address") String address,
-            @RequestParam("image") MultipartFile image,
-            HttpSession session) {
-        
-        Long customerId = (Long) session.getAttribute("customerId");
-        if (customerId == null) {
-            return ResponseEntity.status(401).body(Map.of("message", "Unauthorized"));
+@PostMapping("/create")
+public ResponseEntity<?> createRequest(
+        @RequestParam("category") String category,
+        @RequestParam("description") String description,
+        @RequestParam("address") String address,
+        @RequestParam(required = false) String location,
+        @RequestParam("image") MultipartFile image,
+        HttpSession session) {
+
+    Long customerId = (Long) session.getAttribute("customerId");
+
+    if (customerId == null) {
+        return ResponseEntity.status(401)
+                .body(Map.of("message", "Unauthorized"));
+    }
+
+    try {
+
+        String fileName = fileUploadService.uploadFile(image);
+
+        ServiceRequest request = new ServiceRequest();
+        request.setCustomerId(customerId);
+        request.setCategory(category);
+        request.setDescription(description);
+        request.setAddress(address);
+        request.setImagePath(fileName);
+
+        // ✅ SAFE LOCATION HANDLING
+        if (location != null && !location.trim().isEmpty()
+                && !location.equalsIgnoreCase("undefined")) {
+            request.setLocation(location);
+        } else {
+            request.setLocation(null);
         }
-        
-        try {
-            String fileName = fileUploadService.uploadFile(image);
-            
-            ServiceRequest request = new ServiceRequest();
-            request.setCustomerId(customerId);
-            request.setCategory(category);
-            request.setDescription(description);
-            request.setAddress(address);
-            request.setImagePath(fileName);
-            
-            ServiceRequest saved = serviceRequestService.createRequest(request);
-            
-            return ResponseEntity.ok(Map.of(
+
+        ServiceRequest saved =
+                serviceRequestService.createRequest(request);
+
+        return ResponseEntity.ok(Map.of(
                 "message", "Service request created successfully",
                 "requestId", saved.getId()
-            ));
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body(Map.of("message", "File upload failed"));
-        }
+        ));
+
+    } catch (IOException e) {
+
+        return ResponseEntity.status(500)
+                .body(Map.of("message", "File upload failed"));
     }
+}
     
     // GET REQUESTS BY CATEGORY (FOR PROVIDERS)
     @GetMapping("/category/{category}")

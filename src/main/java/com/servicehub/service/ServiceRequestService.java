@@ -83,6 +83,7 @@ public class ServiceRequestService {
         dto.setImagePath(request.getImagePath());
         dto.setAddress(request.getAddress());
         dto.setStatus(request.getStatus());
+        dto.setLocation(request.getLocation());
 
         if (customer != null) {
             dto.setCustomerName(customer.getName());

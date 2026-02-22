@@ -46,6 +46,13 @@
             <label class="form-label">Address</label>
             <input type="text" id="address" class="form-control" required>
         </div>
+        <div class="mb-3">
+    <label class="form-label">Google Maps Location Link (Optional)</label>
+    <input type="text"
+           id="location"
+           class="form-control"
+           placeholder="Paste Google Maps link here">
+</div>
 
         <!-- IMAGE -->
         <div class="mb-3">
@@ -104,7 +111,7 @@ document.getElementById("requestForm").addEventListener("submit", async function
 
             // Redirect after 1 second
             setTimeout(() => {
-                window.location.href = "customer-dashboard.html";
+                 "customer-dashboard.html";
             }, 1000);
 
         } else {

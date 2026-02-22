@@ -45,4 +45,7 @@ public class ServiceProviderService {
     public ServiceProvider findByEmail(String email) {
         return serviceProviderRepository.findByEmail(email);
     }
+    public ServiceProvider getById(Long id) {
+    return serviceProviderRepository.findById(id).orElse(null);
+}
 }

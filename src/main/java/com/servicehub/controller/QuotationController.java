@@ -1,7 +1,11 @@
 package com.servicehub.controller;
 
 import com.servicehub.model.Quotation;
+import com.servicehub.model.ServiceProvider;
+import com.servicehub.model.ServiceRequest;
+import com.servicehub.service.EmailService;
 import com.servicehub.service.QuotationService;
+import com.servicehub.service.ServiceProviderService;
 import com.servicehub.service.ServiceRequestService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,12 @@ public class QuotationController {
 
     @Autowired
     private ServiceRequestService serviceRequestService;
+
+    @Autowired
+    private ServiceProviderService serviceProviderService;
+
+    @Autowired
+    private EmailService emailService;
 
     // ================= ADD QUOTATION =================
     @PostMapping("/add")
@@ -44,12 +54,12 @@ public class QuotationController {
                 Map.of("message", "Quotation submitted successfully"));
     }
 
-    // ================= GET QUOTATIONS (DTO) =================
+    // ================= GET QUOTATIONS =================
     @GetMapping("/request/{requestId}")
     public ResponseEntity<?> getQuotations(@PathVariable Long requestId) {
 
         return ResponseEntity.ok(
-                quotationService.getByRequestId(requestId));  // DTO
+                quotationService.getByRequestId(requestId));
     }
 
     // ================= ACCEPT QUOTATION =================
@@ -65,7 +75,16 @@ public class QuotationController {
 
         Long requestId = selected.getServiceRequestId();
 
-        // 🔥 Get all quotation entities
+        // 🔥 Get ServiceRequest using YOUR method
+        ServiceRequest request =
+                serviceRequestService.getRequestById(requestId);
+
+        if (request == null) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Service request not found"));
+        }
+
+        // 🔥 Get all quotations for this request
         List<Quotation> allQuotations =
                 quotationService.getEntitiesByRequestId(requestId);
 
@@ -73,14 +92,38 @@ public class QuotationController {
 
             if (q.getId().equals(id)) {
                 q.setStatus("Accepted");
-                quotationService.save(q);
             } else {
-                quotationService.delete(q.getId());   // 🔥 DELETE others
+                q.setStatus("Rejected");
             }
+
+            quotationService.save(q);
         }
 
-        // 🔥 Update request status
+        // 🔥 Update service request status using YOUR method
         serviceRequestService.updateStatus(requestId, "Confirmed");
+
+        // 🔥 Send Email to Accepted Provider
+        ServiceProvider provider =
+                serviceProviderService.getById(selected.getProviderId());
+
+        if (provider != null) {
+
+            String message =
+                    "Hello " + provider.getName() + ",\n\n" +
+                    "🎉 Your quotation has been ACCEPTED!\n\n" +
+                    "Service Details:\n" +
+                    "Category: " + request.getCategory() + "\n" +
+                    "Description: " + request.getDescription() + "\n" +
+                    "Address: " + request.getAddress() + "\n\n" +
+                    "Please contact the customer to proceed.\n\n" +
+                    "Thank you,\nServiceHub";
+
+            emailService.sendSimpleMessage(
+                    provider.getEmail(),
+                    "ServiceHub - Quotation Accepted",
+                    message
+            );
+        }
 
         return ResponseEntity.ok(
                 Map.of("message", "Quotation accepted successfully"));
@@ -103,21 +146,20 @@ public class QuotationController {
         return ResponseEntity.ok(
                 Map.of("message", "Quotation rejected"));
     }
-    
+
+    // ================= PROVIDER QUOTATIONS =================
     @GetMapping("/provider")
-public ResponseEntity<?> getProviderQuotations(HttpSession session){
+    public ResponseEntity<?> getProviderQuotations(HttpSession session){
 
-    Long providerId = (Long) session.getAttribute("providerId");
+        Long providerId = (Long) session.getAttribute("providerId");
 
-    if(providerId == null){
-        return ResponseEntity.status(401)
-                .body(Map.of("message","Unauthorized"));
+        if(providerId == null){
+            return ResponseEntity.status(401)
+                    .body(Map.of("message","Unauthorized"));
+        }
+
+        return ResponseEntity.ok(
+                quotationService.getByProvider(providerId)
+        );
     }
-
-    return ResponseEntity.ok(
-            quotationService.getByProvider(providerId)
-    );
-}
-
-
 }

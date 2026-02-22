@@ -16,6 +16,7 @@ public class ServiceRequest {
     private String address;
     private String imagePath;
     private String status = "Pending";
+    private String location;   // Optional Google Maps location link
 
 
     // Getters & Setters
@@ -42,5 +43,12 @@ public class ServiceRequest {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getLocation() {
+    return location;
+}
+
+public void setLocation(String location) {
+    this.location = location;
+}
 }
     
