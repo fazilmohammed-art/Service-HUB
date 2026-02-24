@@ -275,7 +275,28 @@ async function logout(){
     sessionStorage.clear();
     window.location.href="provider-login.html";
 }
+async function checkNotifications(){
 
+    const res = await fetch(
+        "http://localhost:8080/api/quotations/provider/notifications",
+        { credentials:"include" }
+    );
+
+    const data = await res.json();
+
+    if(data.length > 0){
+
+        data.forEach(q => {
+            alert(
+                "🎉 Good News!\n\n" +
+                "Customer accepted your quotation!\n\n" +
+                "Amount: ₹" + q.amount
+            );
+        });
+    }
+}
+
+checkNotifications();
 </script>
 
 </body>

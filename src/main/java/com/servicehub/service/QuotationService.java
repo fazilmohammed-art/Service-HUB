@@ -93,4 +93,13 @@ public class QuotationService {
 
         }).collect(Collectors.toList());
     }
+    public List<Quotation> getAcceptedByProvider(Long providerId){
+    return quotationRepository
+            .findByProviderIdAndStatus(providerId, "Accepted");
+}
+public List<Quotation> getNewAcceptedNotifications(Long providerId){
+    return quotationRepository
+            .findByProviderIdAndStatusAndNotificationSeenFalse(
+                    providerId, "Accepted");
+}
 }

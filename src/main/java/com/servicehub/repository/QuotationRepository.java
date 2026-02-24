@@ -8,5 +8,8 @@ public interface QuotationRepository extends JpaRepository<Quotation, Long> {
 
     List<Quotation> findByServiceRequestId(Long serviceRequestId);
     List<Quotation> findByProviderId(Long providerId);
+    List<Quotation> findByProviderIdAndStatus(Long providerId, String string);
+    List<Quotation> findByProviderIdAndStatusAndNotificationSeenFalse(
+        Long providerId, String status);
 
 }

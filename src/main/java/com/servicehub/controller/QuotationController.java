@@ -54,7 +54,7 @@ public class QuotationController {
                 Map.of("message", "Quotation submitted successfully"));
     }
 
-    // ================= GET QUOTATIONS =================
+    // ================= GET QUOTATIONS FOR REQUEST =================
     @GetMapping("/request/{requestId}")
     public ResponseEntity<?> getQuotations(@PathVariable Long requestId) {
 
@@ -75,7 +75,6 @@ public class QuotationController {
 
         Long requestId = selected.getServiceRequestId();
 
-        // 🔥 Get ServiceRequest using YOUR method
         ServiceRequest request =
                 serviceRequestService.getRequestById(requestId);
 
@@ -84,25 +83,25 @@ public class QuotationController {
                     .body(Map.of("message", "Service request not found"));
         }
 
-        // 🔥 Get all quotations for this request
+        // 1️⃣ Mark selected quotation as Accepted
+        selected.setStatus("Accepted");
+        quotationService.save(selected);
+
+        // 2️⃣ Reject all other quotations
         List<Quotation> allQuotations =
                 quotationService.getEntitiesByRequestId(requestId);
 
         for (Quotation q : allQuotations) {
-
-            if (q.getId().equals(id)) {
-                q.setStatus("Accepted");
-            } else {
+            if (!q.getId().equals(id)) {
                 q.setStatus("Rejected");
+                quotationService.save(q);
             }
-
-            quotationService.save(q);
         }
 
-        // 🔥 Update service request status using YOUR method
+        // 3️⃣ Update service request status
         serviceRequestService.updateStatus(requestId, "Confirmed");
 
-        // 🔥 Send Email to Accepted Provider
+        // 4️⃣ Send email to accepted provider
         ServiceProvider provider =
                 serviceProviderService.getById(selected.getProviderId());
 
@@ -162,4 +161,27 @@ public class QuotationController {
                 quotationService.getByProvider(providerId)
         );
     }
+
+    // ================= PROVIDER ACCEPTED NOTIFICATIONS =================
+    @GetMapping("/provider/notifications")
+public ResponseEntity<?> getAcceptedNotifications(HttpSession session){
+
+    Long providerId = (Long) session.getAttribute("providerId");
+
+    if(providerId == null){
+        return ResponseEntity.status(401)
+                .body(Map.of("message","Unauthorized"));
+    }
+
+    List<Quotation> newNotifications =
+            quotationService.getNewAcceptedNotifications(providerId);
+
+    // Mark them as seen
+    for(Quotation q : newNotifications){
+        q.setNotificationSeen(true);
+        quotationService.save(q);
+    }
+
+    return ResponseEntity.ok(newNotifications);
+}
 }

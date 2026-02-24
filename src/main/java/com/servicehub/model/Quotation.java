@@ -16,6 +16,8 @@ public class Quotation {
     private String message;
 
     private String status = "Pending"; // Pending / Accepted / Rejected
+    private boolean notificationShown = false;
+    private boolean notificationSeen = false;
 
     public Long getId() { return id; }
 
@@ -33,4 +35,13 @@ public class Quotation {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public boolean isNotificationShown() { return notificationShown; }
+    public void setNotificationShown(boolean notificationShown) { this.notificationShown = notificationShown; }
+    public boolean isNotificationSeen() {
+    return notificationSeen;
+}
+
+public void setNotificationSeen(boolean notificationSeen) {
+    this.notificationSeen = notificationSeen;
+}
 }
